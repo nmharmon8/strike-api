@@ -1,1 +1,1 @@
-# StrikeLNTippingRust
+# Strike Lightning Network Tipping Rust API
