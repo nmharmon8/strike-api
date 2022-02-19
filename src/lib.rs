@@ -29,7 +29,6 @@ pub async fn ln_tip_png_to_file(
 }
 
 pub async fn ln_tip_invoice_id(
-    file_name: &str,
     api_key: &str,
     account_handle: &str,
     amount: f32,
