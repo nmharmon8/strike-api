@@ -3,6 +3,7 @@ use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Deserialize, Serialize};
 
 use crate::errors::{LNError, LNErrorKind};
+use serde_json;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -104,24 +105,32 @@ impl<'a> InvoiceRequest<'a> {
             self.environment, self.api_version, self.account_handle
         );
 
-        reqwest::Client::builder()
+        let response = reqwest::Client::builder()
             .default_headers(self.get_headers())
             .build()?
             .post(&invoice_url)
+            .body(serde_json::to_string(&self.invoice_request_data).unwrap())
             .send()
             .await
             .map_err(|err| {
                 LNErrorKind::StrikeError(LNError {
                     err: err.to_string(),
                 })
-            })?
-            .json::<Invoice>()
-            .await
-            .map_err(|err| {
-                LNErrorKind::JsonError(LNError {
-                    err: err.to_string(),
-                })
-            })
+            })?;
+
+        match response.status() {
+            reqwest::StatusCode::CREATED => {
+                let invoice: Invoice = response.json().await.map_err(|err| {
+                    LNErrorKind::JsonError(LNError {
+                        err: err.to_string(),
+                    })
+                })?;
+                Ok(invoice)
+            }
+            _ => Err(LNErrorKind::StrikeError(LNError {
+                err: response.text().await.unwrap(),
+            })),
+        }
     }
 }
 

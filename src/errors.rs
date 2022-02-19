@@ -16,6 +16,7 @@ impl Display for LNError {
 
 impl Error for LNError {}
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum LNErrorKind {
     HTTPError(LNError),
     StrikeError(LNError),

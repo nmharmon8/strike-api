@@ -91,7 +91,7 @@ impl<'a> QuoteRequest<'a> {
             self.environment, self.api_version, self.invoice_id
         );
 
-        reqwest::Client::builder()
+        let response = reqwest::Client::builder()
             .default_headers(self.get_headers())
             .build()?
             .post(&quote_url)
@@ -101,14 +101,21 @@ impl<'a> QuoteRequest<'a> {
                 LNErrorKind::StrikeError(LNError {
                     err: err.to_string(),
                 })
-            })?
-            .json::<Quote>()
-            .await
-            .map_err(|err| {
-                LNErrorKind::JsonError(LNError {
-                    err: err.to_string(),
-                })
-            })
+            })?;
+
+        match response.status() {
+            reqwest::StatusCode::CREATED => {
+                let quote: Quote = response.json().await.map_err(|err| {
+                    LNErrorKind::JsonError(LNError {
+                        err: err.to_string(),
+                    })
+                })?;
+                Ok(quote)
+            }
+            _ => Err(LNErrorKind::StrikeError(LNError {
+                err: format!("{}", response.status()),
+            })),
+        }
     }
 }
 
