@@ -1,11 +1,11 @@
-mod errors;
-mod invoice;
-mod quote;
-mod tipping;
-use crate::errors::LNErrorKind;
-use crate::tipping::TippingRequest;
+pub mod errors;
+pub mod invoice;
+pub mod quote;
+pub mod tipping;
 
-use invoice::issue_invoice;
+use crate::errors::LNErrorKind;
+use crate::invoice::issue_invoice;
+use crate::tipping::TippingRequest;
 
 pub async fn tipping_request<'a, A>(tipping_request: A) -> Result<quote::Quote, LNErrorKind>
 where
