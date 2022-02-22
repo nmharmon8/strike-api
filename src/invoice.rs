@@ -3,6 +3,7 @@ use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Deserialize, Serialize};
 
 use crate::errors::{LNError, LNErrorKind};
+use crate::tipping::TippingRequest;
 use serde_json;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -41,48 +42,21 @@ pub struct InvoiceRequest<'a> {
     api_version: &'a str,
 }
 
-impl<'a> From<(&'a str, &'a str, f32, &'a str)> for InvoiceRequest<'a> {
-    fn from((api_key, account_handle, amount, currency): (&'a str, &'a str, f32, &'a str)) -> Self {
+impl<'a> From<&'a TippingRequest<'a>> for InvoiceRequest<'a> {
+    fn from(tipping_request: &'a TippingRequest) -> Self {
         InvoiceRequest {
-            api_key: api_key,
-            account_handle: account_handle,
+            api_key: tipping_request.api_key,
+            account_handle: tipping_request.account_handle,
             invoice_request_data: InvoiceRequestData {
-                description: "Tip",
+                description: tipping_request.description,
                 amount: Amount {
-                    amount: amount.to_string(),
-                    currency: String::from(currency),
+                    amount: tipping_request.amount.to_string(),
+                    currency: String::from(tipping_request.currency),
                 },
-                correlation_id: "",
+                correlation_id: tipping_request.correlation_id,
             },
-            environment: "api.strike.me",
-            api_version: "v1",
-        }
-    }
-}
-
-impl<'a> From<(&'a str, &'a str, f32, &'a str, &'a str)> for InvoiceRequest<'a> {
-    fn from(
-        (api_key, account_handle, amount, currency, description): (
-            &'a str,
-            &'a str,
-            f32,
-            &'a str,
-            &'a str,
-        ),
-    ) -> Self {
-        InvoiceRequest {
-            api_key: api_key,
-            account_handle: account_handle,
-            invoice_request_data: InvoiceRequestData {
-                description: description,
-                amount: Amount {
-                    amount: amount.to_string(),
-                    currency: String::from(currency),
-                },
-                correlation_id: "",
-            },
-            environment: "api.strike.me",
-            api_version: "v1",
+            environment: tipping_request.environment,
+            api_version: tipping_request.api_version,
         }
     }
 }

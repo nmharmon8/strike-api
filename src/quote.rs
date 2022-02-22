@@ -3,6 +3,8 @@ use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Deserialize, Serialize};
 
 use crate::errors::{LNError, LNErrorKind};
+use crate::invoice::Invoice;
+use crate::tipping::TippingRequest;
 
 extern crate qrcode_generator;
 
@@ -62,13 +64,13 @@ pub struct QuoteRequest<'a> {
     api_version: &'a str,
 }
 
-impl<'a> From<(&'a str, &'a str)> for QuoteRequest<'a> {
-    fn from((api_key, invoice_id): (&'a str, &'a str)) -> Self {
+impl<'a> From<(&'a TippingRequest<'a>, &'a Invoice)> for QuoteRequest<'a> {
+    fn from((tipping_request, invoice): (&'a TippingRequest, &'a Invoice)) -> Self {
         QuoteRequest {
-            api_key: api_key,
-            invoice_id: invoice_id,
-            environment: "api.strike.me",
-            api_version: "v1",
+            api_key: tipping_request.api_key,
+            invoice_id: invoice.invoice_id.as_str(),
+            environment: tipping_request.environment,
+            api_version: tipping_request.api_version,
         }
     }
 }
