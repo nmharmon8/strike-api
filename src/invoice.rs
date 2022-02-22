@@ -4,26 +4,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::errors::{LNError, LNErrorKind};
 use crate::tipping::TippingRequest;
+use crate::types::{Amount, Invoice};
 use serde_json;
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Invoice {
-    pub invoice_id: String,
-    pub amount: Amount,
-    pub state: String,
-    pub created: String,
-    pub description: String,
-    pub issuer_id: String,
-    pub receiver_id: String,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Amount {
-    pub currency: String,
-    pub amount: String,
-}
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]

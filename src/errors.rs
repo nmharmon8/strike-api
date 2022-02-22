@@ -22,16 +22,7 @@ impl Error for LNError {}
 pub enum LNErrorKind {
     HTTPError(LNError),
     StrikeError(LNError),
-    QRCodeError(LNError),
     JsonError(LNError),
-}
-
-impl From<qrcode_generator::QRCodeError> for LNErrorKind {
-    fn from(err: qrcode_generator::QRCodeError) -> Self {
-        LNErrorKind::QRCodeError(LNError {
-            err: err.to_string(),
-        })
-    }
 }
 
 impl From<reqwest::Error> for LNErrorKind {

@@ -1,61 +1,10 @@
 use reqwest;
 use reqwest::header::{HeaderMap, HeaderValue};
-use serde::{Deserialize, Serialize};
 
 use crate::errors::{LNError, LNErrorKind};
-use crate::invoice::Invoice;
 use crate::tipping::TippingRequest;
-
-extern crate qrcode_generator;
-
-use qrcode_generator::QrCodeEcc;
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Quote {
-    pub quote_id: String,
-    pub description: String,
-    pub ln_invoice: String,
-    pub expiration: String,
-    pub expiration_in_sec: i64,
-    pub source_amount: SourceAmount,
-    pub target_amount: TargetAmount,
-    pub conversion_rate: ConversionRate,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct SourceAmount {
-    pub amount: String,
-    pub currency: String,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TargetAmount {
-    pub amount: String,
-    pub currency: String,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ConversionRate {
-    pub amount: String,
-    pub source_currency: String,
-    pub target_currency: String,
-}
-
-impl Quote {
-    pub fn qrcode_as_png_file(&self, file_name: &str) -> Result<(), LNErrorKind> {
-        qrcode_generator::to_png_to_file(self.ln_invoice.clone(), QrCodeEcc::Low, 1024, file_name)
-            .map_err(|e| e.into())
-    }
-
-    pub fn qrcode_as_png(&self) -> Result<Vec<u8>, LNErrorKind> {
-        qrcode_generator::to_png_to_vec(self.ln_invoice.clone(), QrCodeEcc::Low, 1024)
-            .map_err(|e| e.into())
-    }
-}
+use crate::types::Invoice;
+use crate::types::Quote;
 
 pub struct QuoteRequest<'a> {
     api_key: &'a str,

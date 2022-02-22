@@ -1,3 +1,8 @@
+use crate::errors;
+use crate::invoice;
+use crate::quote;
+use crate::types;
+
 pub struct TippingRequest<'a> {
     pub api_key: &'a str,
     pub account_handle: &'a str,
@@ -73,4 +78,14 @@ where
             correlation_id: correlation_id.into(),
         }
     }
+}
+
+pub async fn tipping_request<'a, A>(tipping_request: A) -> Result<types::Quote, errors::LNErrorKind>
+where
+    A: Into<TippingRequest<'a>>,
+{
+    let tipping_request = tipping_request.into();
+    let invoice = invoice::issue_invoice(&tipping_request).await?;
+    let quote = quote::request_quote((&tipping_request, &invoice)).await?;
+    Ok(quote)
 }
