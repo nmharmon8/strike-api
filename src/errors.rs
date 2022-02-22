@@ -25,6 +25,12 @@ pub enum LNErrorKind {
     JsonError(LNError),
 }
 
+impl Display for LNErrorKind {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        Debug::fmt(&self, f)
+    }
+}
+
 impl From<reqwest::Error> for LNErrorKind {
     fn from(err: reqwest::Error) -> Self {
         LNErrorKind::HTTPError(LNError {
