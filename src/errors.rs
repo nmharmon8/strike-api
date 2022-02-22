@@ -1,9 +1,11 @@
+use serde::{Deserialize, Serialize};
+
 use std::{
     error::Error,
     fmt::{self, Debug, Display, Formatter},
 };
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LNError {
     pub err: String,
 }
@@ -16,7 +18,7 @@ impl Display for LNError {
 
 impl Error for LNError {}
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum LNErrorKind {
     HTTPError(LNError),
     StrikeError(LNError),
