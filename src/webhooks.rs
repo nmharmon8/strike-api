@@ -1,5 +1,5 @@
 use crate::types::{Event, Subscription};
-use crate::errors::{LNErrorKind, LNError, ResponseError};
+use crate::errors::{LNError, ResponseError};
 use reqwest;
 use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Serialize};
@@ -48,7 +48,7 @@ impl<'a> SubscriptionRequest<'a> {
         headers
     }
 
-    async fn request(&self) -> Result<Subscription, LNErrorKind> {
+    async fn request(&self) -> Result<Subscription, LNError> {
         let subscription_url = format!(
             "https://{}/{}/subscriptions/",
             self.environment, self.api_version
@@ -62,19 +62,17 @@ impl<'a> SubscriptionRequest<'a> {
             .body(body)
             .send()
             .await
-            .map_err(|e| LNErrorKind::HTTPError(e.to_string()))?;
+            .map_err(|e| LNError::HTTPError(e.to_string()))?;
 
         //There must be a better way to do this
         match response.status() {
             reqwest::StatusCode::CREATED => {
                 response.json().await.map_err(|err| {
-                    LNErrorKind::JsonError(LNError {
-                        err: err.to_string(),
-                    })
+                    LNError::JsonError(err.to_string())
                 })
             },
             _ => {
-                Err(LNErrorKind::HTTPResponseError(ResponseError {
+                Err(LNError::HTTPResponseError(ResponseError {
                     status: response.status().as_u16(),
                     err: response.text().await.unwrap_or("".to_string()),
                     })
@@ -84,7 +82,7 @@ impl<'a> SubscriptionRequest<'a> {
     }
 }
 
-pub async fn subscribe<'a, A>(subscription_request: A) -> Result<Subscription, LNErrorKind>
+pub async fn subscribe<'a, A>(subscription_request: A) -> Result<Subscription, LNError>
 where
     A: Into<SubscriptionRequest<'a>>,
 {

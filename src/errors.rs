@@ -5,16 +5,6 @@ use std::{
     fmt::{self, Debug, Display, Formatter},
 };
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct LNError {
-    pub err: String,
-}
-
-impl Display for LNError {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        Debug::fmt(&self.err, f)
-    }
-}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ResponseError {
@@ -28,26 +18,23 @@ impl Display for ResponseError {
     }
 }
 
-impl Error for LNError {}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub enum LNErrorKind {
+pub enum LNError {
     HTTPError(String),
     HTTPResponseError(ResponseError),
-    StrikeError(LNError),
-    JsonError(LNError),
+    StrikeError(String),
+    JsonError(String),
 }
 
-impl Display for LNErrorKind {
+impl Display for LNError {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         Debug::fmt(&self, f)
     }
 }
 
-impl From<reqwest::Error> for LNErrorKind {
+impl From<reqwest::Error> for LNError {
     fn from(err: reqwest::Error) -> Self {
-        LNErrorKind::HTTPError(err.to_string())
+        LNError::HTTPError(err.to_string())
     }
 }
-
-

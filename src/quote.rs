@@ -1,7 +1,7 @@
 use reqwest;
 use reqwest::header::{HeaderMap, HeaderValue};
 
-use crate::errors::{LNError, LNErrorKind};
+use crate::errors::{ResponseError, LNError};
 use crate::tipping::TippingRequest;
 use crate::types::Invoice;
 use crate::types::Quote;
@@ -36,7 +36,7 @@ impl<'a> QuoteRequest<'a> {
         return headers;
     }
 
-    async fn request(&self) -> Result<Quote, LNErrorKind> {
+    async fn request(&self) -> Result<Quote, LNError> {
         let quote_url = format!(
             "https://{}/{}/invoices/{}/quote",
             self.environment, self.api_version, self.invoice_id
@@ -49,28 +49,28 @@ impl<'a> QuoteRequest<'a> {
             .send()
             .await
             .map_err(|err| {
-                LNErrorKind::StrikeError(LNError {
-                    err: err.to_string(),
-                })
+                LNError::StrikeError(err.to_string())
             })?;
 
         match response.status() {
             reqwest::StatusCode::CREATED => {
                 let quote: Quote = response.json().await.map_err(|err| {
-                    LNErrorKind::JsonError(LNError {
-                        err: err.to_string(),
-                    })
+                    LNError::JsonError(err.to_string())
                 })?;
                 Ok(quote)
             }
-            _ => Err(LNErrorKind::StrikeError(LNError {
-                err: format!("{}", response.status()),
-            })),
+            _ => {
+                Err(LNError::HTTPResponseError(ResponseError {
+                    status: response.status().as_u16(),
+                    err: response.text().await.unwrap_or("".to_string()),
+                    })
+                )
+            }
         }
     }
 }
 
-pub async fn request_quote<'a, A>(quote_request: A) -> Result<Quote, LNErrorKind>
+pub async fn request_quote<'a, A>(quote_request: A) -> Result<Quote, LNError>
 where
     A: Into<QuoteRequest<'a>>,
 {

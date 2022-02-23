@@ -2,7 +2,7 @@ use reqwest;
 use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Deserialize, Serialize};
 
-use crate::errors::{LNError, LNErrorKind};
+use crate::errors::{ResponseError, LNError};
 use crate::tipping::TippingRequest;
 use crate::types::{Amount, Invoice};
 use serde_json;
@@ -55,7 +55,7 @@ impl<'a> InvoiceRequest<'a> {
         headers
     }
 
-    async fn request(&self) -> Result<Invoice, LNErrorKind> {
+    async fn request(&self) -> Result<Invoice, LNError> {
         let invoice_url = format!(
             "https://{}/{}/invoices/handle/{}/",
             self.environment, self.api_version, self.account_handle
@@ -69,28 +69,28 @@ impl<'a> InvoiceRequest<'a> {
             .send()
             .await
             .map_err(|err| {
-                LNErrorKind::StrikeError(LNError {
-                    err: err.to_string(),
-                })
+                LNError::StrikeError(err.to_string())
             })?;
 
         match response.status() {
             reqwest::StatusCode::CREATED => {
                 let invoice: Invoice = response.json().await.map_err(|err| {
-                    LNErrorKind::JsonError(LNError {
-                        err: err.to_string(),
-                    })
+                    LNError::JsonError(err.to_string())
                 })?;
                 Ok(invoice)
             }
-            _ => Err(LNErrorKind::StrikeError(LNError {
-                err: response.text().await.unwrap(),
-            })),
+            _ => {
+                Err(LNError::HTTPResponseError(ResponseError {
+                    status: response.status().as_u16(),
+                    err: response.text().await.unwrap_or("".to_string()),
+                    })
+                )
+            }
         }
     }
 }
 
-pub async fn issue_invoice<'a, A>(invoice_request: A) -> Result<Invoice, LNErrorKind>
+pub async fn issue_invoice<'a, A>(invoice_request: A) -> Result<Invoice, LNError>
 where
     A: Into<InvoiceRequest<'a>>,
 {

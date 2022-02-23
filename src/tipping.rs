@@ -107,7 +107,7 @@ where
     }
 }
 
-pub async fn tipping_request<'a, A>(tipping_request: A) -> Result<types::Quote, errors::LNErrorKind>
+pub async fn tipping_request<'a, A>(tipping_request: A) -> Result<types::Quote, errors::LNError>
 where
     A: Into<TippingRequest<'a>>,
 {
@@ -127,7 +127,7 @@ mod tests {
     async fn test_ln_tip() {
         dotenv::dotenv().ok();
 
-        let quote: Result<types::Quote, errors::LNErrorKind> = tipping_request((
+        let quote: Result<types::Quote, errors::LNError> = tipping_request((
             &env::var("API_KEY").unwrap_or("".to_string())[..],
             &env::var("ACCOUNT_HANDLE").unwrap_or("".to_string())[..],
             1.0,
