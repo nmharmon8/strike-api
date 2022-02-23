@@ -16,11 +16,24 @@ impl Display for LNError {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ResponseError {
+    pub err: String,
+    pub status: u16,
+}
+
+impl Display for ResponseError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        Debug::fmt(&format!("status: {} {}", &self.err, &self.status), f)
+    }
+}
+
 impl Error for LNError {}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum LNErrorKind {
-    HTTPError(LNError),
+    HTTPError(String),
+    HTTPResponseError(ResponseError),
     StrikeError(LNError),
     JsonError(LNError),
 }
@@ -33,8 +46,8 @@ impl Display for LNErrorKind {
 
 impl From<reqwest::Error> for LNErrorKind {
     fn from(err: reqwest::Error) -> Self {
-        LNErrorKind::HTTPError(LNError {
-            err: err.to_string(),
-        })
+        LNErrorKind::HTTPError(err.to_string())
     }
 }
+
+

@@ -1,5 +1,10 @@
 use serde::{Deserialize, Serialize};
 
+use std::{
+    error::Error,
+    fmt::{self, Debug, Display, Formatter},
+};
+
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Quote {
@@ -52,4 +57,59 @@ pub struct Invoice {
 pub struct Amount {
     pub currency: String,
     pub amount: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Subscription {
+    pub id: String,
+    pub webhook_url: String,
+    pub webhook_version: String,
+    pub enabled: bool,
+    pub created: String,
+    pub event_types: Vec<Event>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum Event {
+    #[serde(rename = "invoice.created")]
+    InvoiceCreated,
+    #[serde(rename = "invoice.updated")]
+    InvoiceUpdated,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json;
+
+    #[test]
+    fn test_deserialize_subscription() {
+        let subscription: Subscription = serde_json::from_str(
+            r#"{
+                "id": "4d0081e2-5355-411b-b0e4-ee5ff1b691d1",
+                "webhookUrl": "https://kramerica_industries.com/webhook",
+                "webhookVersion": "v1",
+                "enabled": true,
+                "created": "2022-02-23T18:29:18.773+00:00",
+                "eventTypes": [
+                  "invoice.created",
+                  "invoice.updated"
+                ]
+              }"#,
+        )
+        .unwrap();
+
+        assert_eq!(
+            subscription,
+            Subscription {
+                id: "4d0081e2-5355-411b-b0e4-ee5ff1b691d1".to_string(),
+                webhook_url: "https://kramerica_industries.com/webhook".to_string(),
+                webhook_version: "v1".to_string(),
+                enabled: true,
+                created: "2022-02-23T18:29:18.773+00:00".to_string(),
+                event_types: vec![Event::InvoiceCreated, Event::InvoiceUpdated],
+            }
+        );
+    }
 }

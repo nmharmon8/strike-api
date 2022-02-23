@@ -12,7 +12,7 @@ use serde_json;
 struct InvoiceRequestData<'a> {
     description: &'a str,
     amount: Amount,
-    #[serde(skip)]
+    #[serde(skip_serializing_if = "str::is_empty")]
     pub correlation_id: &'a str,
 }
 

@@ -50,6 +50,33 @@ where
     }
 }
 
+impl<'a, T> From<(T, T, f32, T, T, T)> for TippingRequest<'a>
+where
+    T: Into<&'a str>,
+{
+    fn from(
+        (api_key, account_handle, amount, currency, description, correlation_id): (
+            T,
+            T,
+            f32,
+            T,
+            T,
+            T,
+        ),
+    ) -> Self {
+        TippingRequest {
+            api_key: api_key.into(),
+            account_handle: account_handle.into(),
+            amount: amount,
+            currency: currency.into(),
+            description: description.into(),
+            environment: "api.strike.me",
+            api_version: "v1",
+            correlation_id: correlation_id.into(),
+        }
+    }
+}
+
 //Do you need to implement the From for the default constructor?
 impl<'a, T> From<(T, T, f32, T, T, T, T, T)> for TippingRequest<'a>
 where
@@ -88,4 +115,26 @@ where
     let invoice = invoice::issue_invoice(&tipping_request).await?;
     let quote = quote::request_quote((&tipping_request, &invoice)).await?;
     Ok(quote)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use dotenv;
+    use std::env;
+
+    #[tokio::test]
+    async fn test_ln_tip() {
+        dotenv::dotenv().ok();
+
+        let quote: Result<types::Quote, errors::LNErrorKind> = tipping_request((
+            &env::var("API_KEY").unwrap_or("".to_string())[..],
+            &env::var("ACCOUNT_HANDLE").unwrap_or("".to_string())[..],
+            1.0,
+            "USD",
+            "Description",
+        ))
+        .await;
+        println!("{:?}", quote);
+    }
 }
