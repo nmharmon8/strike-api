@@ -1,10 +1,5 @@
 use serde::{Deserialize, Serialize};
-
-use std::{
-    error::Error,
-    fmt::{self, Debug, Display, Formatter},
-};
-
+use std::fmt::{self, Debug, Display, Formatter};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ResponseError {

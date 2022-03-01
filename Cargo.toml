@@ -7,18 +7,16 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-types = []
-errors = ["reqwest"]
-webhooks = ["types", "errors", "serde_json"]
-tipping = ["types", "errors", "reqwest", "serde_json"]
-default = []
+base = ["reqwest", "async-trait", "serde_json", "serde", "rand"]
+tipping = ["base"]
+default = ["base"]
 
 [dependencies]
 reqwest = { version = "0.11", features = ["json"], optional = true }
-
+async-trait = { version="0.1.52", optional = true}
 serde_json = { version = "1.0", optional = true }
-serde = { version = "1.0", features = ["derive"] }
-
+serde = { version = "1.0", features = ["derive"], optional = true }
+rand = {version = "0.8.5", optional = true}
 
 
 [dev-dependencies]

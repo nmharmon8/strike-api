@@ -1,7 +1,37 @@
 use crate::errors;
-use crate::invoice;
-use crate::quote;
+use crate::requests::invoice;
+use crate::requests::quote;
 use crate::types;
+
+impl<'a> From<(&'a TippingRequest<'a>, &'a types::Invoice)> for quote::QuoteRequest<'a> {
+    fn from((tipping_request, invoice): (&'a TippingRequest, &'a types::Invoice)) -> Self {
+        quote::QuoteRequest {
+            api_key: tipping_request.api_key,
+            invoice_id: invoice.invoice_id.as_str(),
+            environment: tipping_request.environment,
+            api_version: tipping_request.api_version,
+        }
+    }
+}
+
+impl<'a> From<&'a TippingRequest<'a>> for invoice::InvoiceRequest<'a> {
+    fn from(tipping_request: &'a TippingRequest) -> Self {
+        invoice::InvoiceRequest {
+            api_key: tipping_request.api_key,
+            account_handle: tipping_request.account_handle,
+            invoice_request_data: invoice::InvoiceRequestData {
+                description: tipping_request.description,
+                amount: types::Amount {
+                    amount: tipping_request.amount.to_string(),
+                    currency: String::from(tipping_request.currency),
+                },
+                correlation_id: tipping_request.correlation_id,
+            },
+            environment: tipping_request.environment,
+            api_version: tipping_request.api_version,
+        }
+    }
+}
 
 pub struct TippingRequest<'a> {
     pub api_key: &'a str,

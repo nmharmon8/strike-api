@@ -1,12 +1,10 @@
-#[cfg(feature = "errors")]
+#[cfg(feature = "base")]
 pub mod errors;
 #[cfg(feature = "tipping")]
-mod invoice;
-#[cfg(feature = "tipping")]
-mod quote;
-#[cfg(feature = "tipping")]
 pub mod tipping;
-#[cfg(feature = "types")]
+#[cfg(feature = "base")]
 pub mod types;
-#[cfg(feature = "webhooks")]
-pub mod webhooks;
+#[cfg(feature = "base")]
+pub mod requests;
+#[cfg(test)]
+pub mod test;

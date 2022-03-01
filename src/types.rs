@@ -1,9 +1,6 @@
 use serde::{Deserialize, Serialize};
+use std::fmt::{Debug};
 
-use std::{
-    error::Error,
-    fmt::{self, Debug, Display, Formatter},
-};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -67,6 +64,8 @@ pub struct Subscription {
     pub webhook_version: String,
     pub enabled: bool,
     pub created: String,
+    #[serde(skip_deserializing)]
+    pub secret: String,
     pub event_types: Vec<Event>,
 }
 
@@ -107,6 +106,7 @@ mod tests {
                 webhook_url: "https://kramerica_industries.com/webhook".to_string(),
                 webhook_version: "v1".to_string(),
                 enabled: true,
+                secret: "".to_string(),
                 created: "2022-02-23T18:29:18.773+00:00".to_string(),
                 event_types: vec![Event::InvoiceCreated, Event::InvoiceUpdated],
             }
