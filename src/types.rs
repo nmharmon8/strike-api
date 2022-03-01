@@ -85,6 +85,30 @@ pub struct Rate {
     pub target_currency: String,
 }
 
+fn none_string() -> String {
+    String::from("None")
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Account {
+    pub handle: String,
+    #[serde(default = "none_string")]
+    pub avatar_url: String,
+    #[serde(default = "none_string")]
+    pub description: String,
+    pub can_receive: bool,
+    pub currencies: Vec<Currency>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Currency {
+    pub currency: String,
+    pub is_default_currency: bool,
+    pub is_available: bool,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

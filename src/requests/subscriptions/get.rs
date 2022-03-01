@@ -42,17 +42,25 @@ where
 }
 
 #[cfg(test)]
+pub mod test_get {
+    use super::*;
+    use crate::test::utils::{get_api_key};
+
+    pub async fn test_get_subscriptions() -> Result<Vec<Subscription>, LNError> {
+        let api_key= get_api_key();
+        let get_subscriptions = get_subscriptions(&api_key[..]).await;
+        assert!(get_subscriptions.is_ok());
+        get_subscriptions
+    }
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
-    use dotenv;
-    use std::env;
 
    #[tokio::test]
    async fn test_get_subscriptions() {
-        dotenv::dotenv().ok();
-        let api_key = &env::var("API_KEY").unwrap_or("".to_string())[..];
-        let subscription_request = GetSubscriptionsRequest::from(api_key);
-        let subscriptions = get_subscriptions(subscription_request).await;
+        let subscriptions  = test_get::test_get_subscriptions().await;
         assert!(subscriptions.is_ok());
    }
 }
