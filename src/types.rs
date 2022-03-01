@@ -77,6 +77,14 @@ pub enum Event {
     InvoiceUpdated,
 }
 
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Rate {
+    pub amount: String,
+    pub source_currency: String,
+    pub target_currency: String,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
