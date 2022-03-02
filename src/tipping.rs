@@ -1,5 +1,5 @@
 use crate::errors;
-use crate::requests::invoice;
+use crate::requests::invoices;
 use crate::requests::quote;
 use crate::types;
 
@@ -14,12 +14,12 @@ impl<'a> From<(&'a TippingRequest<'a>, &'a types::Invoice)> for quote::QuoteRequ
     }
 }
 
-impl<'a> From<&'a TippingRequest<'a>> for invoice::InvoiceRequest<'a> {
+impl<'a> From<&'a TippingRequest<'a>> for invoices::issue::InvoiceRequest<'a> {
     fn from(tipping_request: &'a TippingRequest) -> Self {
-        invoice::InvoiceRequest {
+        invoices::issue::InvoiceRequest {
             api_key: tipping_request.api_key,
             account_handle: tipping_request.account_handle,
-            invoice_request_data: invoice::InvoiceRequestData {
+            invoice_request_data: invoices::issue::InvoiceRequestData {
                 description: tipping_request.description,
                 amount: types::Amount {
                     amount: tipping_request.amount.to_string(),
@@ -142,7 +142,7 @@ where
     A: Into<TippingRequest<'a>>,
 {
     let tipping_request = tipping_request.into();
-    let invoice = invoice::issue_invoice(&tipping_request).await?;
+    let invoice = invoices::issue::issue_invoice(&tipping_request).await?;
     let quote = quote::request_quote((&tipping_request, &invoice)).await?;
     Ok(quote)
 }

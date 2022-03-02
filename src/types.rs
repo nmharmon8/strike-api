@@ -39,6 +39,13 @@ pub struct ConversionRate {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct Invoices {
+    pub items: Vec<Invoice>,
+    pub count: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Invoice {
     pub invoice_id: String,
     pub amount: Amount,

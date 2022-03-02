@@ -39,4 +39,15 @@ mod tests {
         let subscription = subscription.unwrap();
         test_delete::test_delete_subscription( &subscription.id[..]).await;
    }
+
+//    use crate::requests::subscriptions::get::test_get::test_get_subscriptions;
+
+//    #[tokio::test]
+//    async fn test_delete_all_subscriptions() {
+//         //Create a subscription to delete
+//         let subscriptions = test_get_subscriptions().await.unwrap();
+//         for subscription in subscriptions {
+//             test_delete::test_delete_subscription( &subscription.id[..]).await;
+//         }
+//    }
 }

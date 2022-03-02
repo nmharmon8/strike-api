@@ -49,3 +49,42 @@ where
     let invoice_request = invoice_request.into();
     invoice_request.post::<Invoice>().await
 }
+
+
+#[cfg(test)]
+pub mod test_invoice {
+
+    use super::*;
+    use crate::test::utils::{get_api_key};
+
+    pub async fn test_issue_invoice() -> Result<Invoice, LNError> {
+        let api_key = get_api_key();
+        let invoice_request = InvoiceRequest {
+            api_key: &api_key[..],
+            account_handle: "magog",
+            invoice_request_data: InvoiceRequestData {
+                description: "test_description",
+                amount: Amount {
+                    amount: "1.00".to_string(),
+                    currency: "USD".to_string(),
+                },
+                correlation_id: "",
+            },
+            environment: "api.strike.me",
+            api_version: "v1",
+        };
+        issue_invoice(invoice_request).await
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_issue_invoice() {
+        let invoice = test_invoice::test_issue_invoice().await;
+        println!("{:?}", invoice);
+        assert!(invoice.is_ok());
+    }
+}
