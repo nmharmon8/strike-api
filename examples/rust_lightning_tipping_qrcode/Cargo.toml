@@ -6,7 +6,7 @@ author = "Nathan Harmon"
 
 [dependencies]
 # For this example you must include the tipping feature
-strike-api = { git = "https://github.com/nmharmon8/strike-api.git", branch = "main", features = ["tipping"] }
+strike-api = { version = "0.0.1", features = ["tipping"] }
 # Any qrcode generation library
 qrcode-generator = {version = "4.1.2"}
 # Any multi-threading library
