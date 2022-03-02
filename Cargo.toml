@@ -3,6 +3,16 @@ name = "strike-api"
 version = "0.0.1"
 authors = ["Nathan Harmon <nmharmon8@gmail.com>"]
 edition = "2021"
+license-file = "LICENSE"
+keywords = ["lightning", "bitcoin", "strike", "api", "lightning-network", "lightning-network-api", "tipping", "tip", "cryptocurrencies", "crypto"]
+categories = ["cryptography::cryptocurrencies", "api-bindings"]
+description = "Strike lightning network API for the Bitcoin network."
+repository = "https://github.com/nmharmon8/strike-api.git"
+homepage = "https://theadventuresofaliceandbob.com/"
+readme = "README.md"
+
+[badges]
+maintenance = { status = "actively-developed: New features are being added and bugs are being fixed." }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

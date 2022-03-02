@@ -4,6 +4,8 @@
 
 Rust interface to Strike's excellent Lightning Network API. Easily add lightning tipping or payments to any application.
 
+If you don't have an API key, apply for one [Strike](https://developer.strike.me/). In your application use an email with an existing strike account for quick approval.
+
 ## Tipping Example
 
 Using Strikes API to tip someone, or even yourself, is very easy.
