@@ -1,6 +1,6 @@
 [package]
-name = "strike_ln_tipping"
-version = "0.1.0"
+name = "strike-api"
+version = "0.0.1"
 authors = ["Nathan Harmon <nmharmon8@gmail.com>"]
 edition = "2021"
 

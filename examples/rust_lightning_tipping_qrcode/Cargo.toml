@@ -1,0 +1,9 @@
+[package]
+name = "rust_lightning_tipping_qrcode"
+version = "0.1.0"
+edition = "2021"
+author = "Nathan Harmon"
+
+[dependencies]
+strike-api = { git = "https://github.com/nmharmon8/strike-api.git", branch = "guide", features = ["tipping"] }
+qrcode-generator = {version = "4.1.2"}

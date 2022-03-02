@@ -24,7 +24,7 @@ mod tests {
     use crate::requests::subscriptions;
 
    #[tokio::test]
-   async fn test_delete_all_subscriptions() {
+   async fn test_find_subscriptions() {
         dotenv::dotenv().ok();
         let api_key = &env::var("API_KEY").unwrap_or("".to_string())[..];
 

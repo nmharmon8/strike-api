@@ -110,6 +110,7 @@ pub mod tests {
     use super::*;
 
     use crate::requests::subscriptions::create::test_create;
+    use crate::requests::subscriptions::delete::test_delete::test_delete_subscription;
 
     #[test]
     fn test_serialize_subscription_request() {
@@ -133,5 +134,6 @@ pub mod tests {
         let subscription = test_create::test_create_subscription().await;
         println!("{:?}", subscription);
         assert!(subscription.is_ok());
+        test_delete_subscription( &subscription.unwrap().id[..]).await;
     }
 }
