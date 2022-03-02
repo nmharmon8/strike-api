@@ -4,7 +4,11 @@
 
 Rust interface to Strike's excellent Lightning Network API. Easily add lightning tipping or payments to any application.
 
-Using Strikes API to tip someone is very easy.
+## Tipping Example
+
+Using Strikes API to tip someone, or even yourself, is very easy.
+
+[Full Tipping Example Code](examples/rust_lightning_tipping_qrcode/)
 
 Cargo.toml
 
@@ -68,4 +72,4 @@ fn create_qrcode(ln_invoice : String) {
 
 This result in create a payable Lightning invoice, and a qr code saved to a png.
 
-<p align="center"><img width=500 src="images/ln_qrcode.png"></p>
+<p align="center"><img width=400 src="images/ln_qrcode.png"></p>
