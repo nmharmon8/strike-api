@@ -12,7 +12,7 @@ homepage = "https://theadventuresofaliceandbob.com/"
 readme = "README.md"
 
 [badges]
-maintenance = { status = "actively-developed: New features are being added and bugs are being fixed." }
+maintenance = { status = "actively-developed" }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
