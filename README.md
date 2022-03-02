@@ -1,1 +1,1 @@
-# Strike Lightning Network Tipping Rust API
+# Strike API Interface in Rust
