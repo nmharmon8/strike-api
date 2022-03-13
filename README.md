@@ -17,7 +17,7 @@ Cargo.toml
 ```toml
 [dependencies]
 # For this example you must include the tipping feature
-strike-api = { version = "0.0.1", features = ["tipping"] }
+strike-api = { version = "0.0.3", features = ["tipping"] }
 # Any qrcode generation library
 qrcode-generator = {version = "4.1.2"}
 # Any multi-threading library
