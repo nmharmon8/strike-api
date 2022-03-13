@@ -1,6 +1,6 @@
 [package]
 name = "strike-api"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Nathan Harmon <nmharmon8@gmail.com>"]
 edition = "2021"
 license-file = "LICENSE"
@@ -17,7 +17,8 @@ maintenance = { status = "actively-developed" }
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-base = ["reqwest", "async-trait", "serde_json", "serde", "rand"]
+types = ["serde_json"]
+base = ["types", "reqwest", "async-trait", "serde_json", "serde", "rand"]
 tipping = ["base"]
 default = ["base"]
 
